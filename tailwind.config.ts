@@ -21,6 +21,12 @@ const config: Config = {
           'Arial',
           'sans-serif',
         ],
+        serif: [
+          'var(--font-playfair)',
+          'Playfair Display',
+          'Georgia',
+          'serif',
+        ],
       },
       colors: {
         background: "var(--background)",

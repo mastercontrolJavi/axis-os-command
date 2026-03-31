@@ -43,7 +43,7 @@ import {
   ShoppingCart,
   PiggyBank,
   Trash2,
-  AlertTriangle,
+  Bell,
   Link2,
   ChevronDown,
   ChevronUp,
@@ -249,7 +249,7 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
       ) : (
         <div className="grid grid-cols-3 gap-5">
           {/* Income Card */}
-          <Card className="shadow-card border-none">
+          <Card className="shadow-card">
             <CardContent className="pt-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-2xl p-3 w-12 h-12 flex items-center justify-center shrink-0 bg-gradient-to-br from-blue-400 to-blue-600">
@@ -277,9 +277,8 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
                 </div>
               </div>
               <Button
-                variant="outline"
                 size="sm"
-                className="w-full rounded-xl"
+                className="w-full rounded-full bg-ios-gray-6 hover:bg-ios-gray-5 text-foreground/80 font-medium border-0 shadow-none"
                 onClick={() => {
                   if (editingIncome) {
                     handleIncomeSave()
@@ -295,7 +294,7 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
           </Card>
 
           {/* Spent Card */}
-          <Card className="shadow-card border-none">
+          <Card className="shadow-card">
             <CardContent className="pt-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className="rounded-2xl p-3 w-12 h-12 flex items-center justify-center shrink-0 bg-gradient-to-br from-orange-400 to-orange-500">
@@ -309,9 +308,8 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
                 </div>
               </div>
               <Button
-                variant="outline"
                 size="sm"
-                className="w-full rounded-xl"
+                className="w-full rounded-full bg-ios-gray-6 hover:bg-ios-gray-5 text-foreground/80 font-medium border-0 shadow-none"
                 onClick={() => onNavigate?.('spending')}
               >
                 View Details
@@ -320,7 +318,7 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
           </Card>
 
           {/* Remaining Card */}
-          <Card className="shadow-card border-none">
+          <Card className="shadow-card">
             <CardContent className="pt-5 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className={cn(
@@ -337,9 +335,8 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
                 </div>
               </div>
               <Button
-                variant="outline"
                 size="sm"
-                className="w-full rounded-xl"
+                className="w-full rounded-full bg-ios-gray-6 hover:bg-ios-gray-5 text-foreground/80 font-medium border-0 shadow-none"
                 onClick={() => onNavigate?.('budgets')}
               >
                 Edit
@@ -351,18 +348,18 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
 
       {/* Burn Rate Warning */}
       {showBurnWarning && (
-        <div className="flex items-center gap-3 rounded-xl bg-ios-red/10 p-4 text-ios-red">
-          <AlertTriangle className="h-5 w-5 shrink-0" />
+        <div className="flex items-center gap-3 rounded-[1.5rem] bg-red-50 border border-red-100 p-4 text-ios-red">
+          <Bell className="h-5 w-5 shrink-0" />
           <p className="text-sm font-medium">
-            Projected monthly spend of {formatCurrency(projectedSpend)} exceeds budget by{' '}
-            {formatCurrency(projectedSpend - income)}
+            Projected monthly spend of <strong>{formatCurrency(projectedSpend)}</strong> exceeds budget by{' '}
+            <strong>{formatCurrency(projectedSpend - income)}</strong>. Adjust your spending.
           </p>
         </div>
       )}
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Expense Form */}
-        <Card className="shadow-card border-none">
+        <Card className="shadow-card">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Add Expense</CardTitle>
@@ -452,7 +449,7 @@ export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => voi
 
       {/* Inline Edit Category */}
       {/* Expense Table */}
-      <Card className="shadow-card border-none">
+      <Card className="shadow-card">
         <CardHeader>
           <CardTitle>Expenses — {getMonthLabel(selectedMonth)}</CardTitle>
         </CardHeader>

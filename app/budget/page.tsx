@@ -16,17 +16,17 @@ export default function BudgetPage() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-[28px] font-bold tracking-tight">Budget & Finance</h2>
+        <h2 className="text-[28px] font-bold tracking-tight font-serif">Budget & Finance</h2>
         <p className="text-sm text-muted-foreground">Track spending, limits, and financial patterns</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="inline-flex gap-1 overflow-x-auto bg-transparent p-0 mb-8 h-auto">
+        <TabsList className="flex gap-0 bg-ios-gray-6 rounded-full p-1 mb-8 h-auto w-fit">
           {(['overview', 'spending', 'budgets', 'recurring', 'insights'] as const).map((tab) => (
             <TabsTrigger
               key={tab}
               value={tab}
-              className="rounded-full px-5 py-2 text-sm font-medium capitalize transition-all data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/60 data-[state=inactive]:hover:text-foreground data-[state=inactive]:bg-transparent"
+              className="rounded-full px-5 py-2 text-sm font-medium capitalize transition-all data-[active]:bg-white data-[active]:text-ios-blue data-[active]:shadow-sm text-muted-foreground hover:text-foreground flex-none"
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </TabsTrigger>
