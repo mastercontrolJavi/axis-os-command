@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { BudgetClient } from '@/components/budget/budget-client'
 import { SpendingOverview } from '@/components/budget/spending-overview'
@@ -8,6 +11,8 @@ import { SpendingInsights } from '@/components/budget/spending-insights'
 export const dynamic = 'force-dynamic'
 
 export default function BudgetPage() {
+  const [activeTab, setActiveTab] = useState('overview')
+
   return (
     <div>
       <div className="mb-6">
@@ -15,27 +20,21 @@ export default function BudgetPage() {
         <p className="text-sm text-muted-foreground">Track spending, limits, and financial patterns</p>
       </div>
 
-      <Tabs defaultValue="overview">
-        <TabsList className="flex-wrap gap-1 bg-ios-gray-6 rounded-xl p-1 mb-8 h-auto">
-          <TabsTrigger value="overview" className="rounded-lg text-xs data-[state=active]:shadow-sm">
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="spending" className="rounded-lg text-xs data-[state=active]:shadow-sm">
-            Spending
-          </TabsTrigger>
-          <TabsTrigger value="budgets" className="rounded-lg text-xs data-[state=active]:shadow-sm">
-            Budgets
-          </TabsTrigger>
-          <TabsTrigger value="recurring" className="rounded-lg text-xs data-[state=active]:shadow-sm">
-            Recurring
-          </TabsTrigger>
-          <TabsTrigger value="insights" className="rounded-lg text-xs data-[state=active]:shadow-sm">
-            Insights
-          </TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="inline-flex gap-1 overflow-x-auto bg-transparent p-0 mb-8 h-auto">
+          {(['overview', 'spending', 'budgets', 'recurring', 'insights'] as const).map((tab) => (
+            <TabsTrigger
+              key={tab}
+              value={tab}
+              className="rounded-full px-5 py-2 text-sm font-medium capitalize transition-all data-[state=active]:bg-ios-blue data-[state=active]:text-white data-[state=active]:shadow-sm data-[state=inactive]:text-foreground/60 data-[state=inactive]:hover:text-foreground data-[state=inactive]:bg-transparent"
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
         <TabsContent value="overview">
-          <BudgetClient />
+          <BudgetClient onNavigate={setActiveTab} />
         </TabsContent>
 
         <TabsContent value="spending">

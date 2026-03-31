@@ -403,34 +403,39 @@ export function SavingsTracker() {
                       <p className="mt-1 text-xs text-ios-green font-medium">Goal reached!</p>
                     )}
                   {/* Action Buttons */}
-                  <div className="flex items-center gap-1 mt-2">
-                    <button
+                  <div className="flex items-center gap-2 mt-3">
+                    <Button
+                      size="sm"
+                      className="rounded-full bg-ios-blue text-white hover:bg-ios-blue/90 px-4"
                       onClick={() => {
                         setAdjustingId(goal.id)
                         setAdjustMode('add')
                       }}
-                      className="flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium bg-ios-green/10 text-ios-green hover:bg-ios-green/20 transition-colors"
                       title="Add deposit"
                     >
-                      <Plus className="h-3 w-3" /> Add
-                    </button>
-                    <button
+                      Add
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full px-4"
                       onClick={() => {
                         setAdjustingId(goal.id)
                         setAdjustMode('subtract')
                       }}
-                      className="flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium bg-ios-orange/10 text-ios-orange hover:bg-ios-orange/20 transition-colors"
                       title="Withdraw"
                     >
-                      <Minus className="h-3 w-3" /> Withdraw
-                    </button>
-                    <button
+                      Withdraw
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full px-4"
                       onClick={() => openHistory(goal)}
-                      className="flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium bg-ios-blue/10 text-ios-blue hover:bg-ios-blue/20 transition-colors"
                       title="View history"
                     >
-                      <History className="h-3 w-3" /> History
-                    </button>
+                      <History className="h-3.5 w-3.5" /> History
+                    </Button>
                     <button
                       onClick={() => startEdit(goal)}
                       className="ml-auto text-muted-foreground hover:text-foreground transition-colors"
