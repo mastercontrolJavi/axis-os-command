@@ -49,6 +49,7 @@ import {
   ChevronUp,
   Pencil,
   Check,
+  CalendarDays,
 } from 'lucide-react'
 import { CsvImport } from './csv-import'
 import { SavingsTracker } from './savings-tracker'
@@ -64,7 +65,7 @@ function generateMonthOptions() {
   return months
 }
 
-export function BudgetClient() {
+export function BudgetClient({ onNavigate }: { onNavigate?: (tab: string) => void } = {}) {
   const { income, updateIncome } = useIncome()
   const [editingIncome, setEditingIncome] = useState(false)
   const [incomeInput, setIncomeInput] = useState('')
@@ -221,22 +222,22 @@ export function BudgetClient() {
   return (
     <div className="space-y-8">
       {/* Month Selector */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {monthOptions.map((m) => (
-          <button
-            key={m}
-            onClick={() => { setSelectedMonth(m); setExpensesExpanded(false) }}
-            className={cn(
-              'whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 active:scale-[0.98]',
-              m === selectedMonth
-                ? 'bg-[rgba(0,122,255,0.1)] text-ios-blue'
-                : 'text-muted-foreground hover:bg-ios-gray-6'
-            )}
-          >
-            {getMonthLabel(m)}
-          </button>
-        ))}
-      </div>
+      <Select
+        value={selectedMonth}
+        onValueChange={(v) => { if (v) { setSelectedMonth(v); setExpensesExpanded(false) } }}
+      >
+        <SelectTrigger className="w-52 rounded-xl border-none shadow-card bg-white gap-2">
+          <CalendarDays className="h-4 w-4 text-muted-foreground shrink-0" />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {monthOptions.map((m) => (
+            <SelectItem key={m} value={m}>
+              {getMonthLabel(m)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       {/* Monthly Overview */}
       {loading ? (
@@ -249,75 +250,100 @@ export function BudgetClient() {
         <div className="grid grid-cols-3 gap-5">
           {/* Income Card */}
           <Card className="shadow-card border-none">
-            <CardContent className="pt-5">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4 text-ios-blue" />
-                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Income
-                  </span>
+            <CardContent className="pt-5 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl p-3 w-12 h-12 flex items-center justify-center shrink-0 bg-gradient-to-br from-blue-400 to-blue-600">
+                  <Wallet className="h-6 w-6 text-white" />
                 </div>
-                <button
-                  onClick={() => {
-                    if (editingIncome) {
-                      handleIncomeSave()
-                    } else {
-                      setIncomeInput(String(income))
-                      setEditingIncome(true)
-                    }
-                  }}
-                  className="text-muted-foreground hover:text-ios-blue transition-colors"
-                >
-                  {editingIncome ? <Check className="h-4 w-4" /> : <Pencil className="h-3.5 w-3.5" />}
-                </button>
+                <div className="min-w-0">
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Income</span>
+                  {editingIncome ? (
+                    <Input
+                      type="number"
+                      step="1"
+                      min="0"
+                      value={incomeInput}
+                      onChange={(e) => setIncomeInput(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleIncomeSave()}
+                      onBlur={handleIncomeSave}
+                      className="mt-1 text-2xl font-bold h-10"
+                      autoFocus
+                    />
+                  ) : (
+                    <div className="text-[32px] font-bold leading-none tracking-tight text-ios-blue">
+                      {formatCurrencyShort(income)}
+                    </div>
+                  )}
+                </div>
               </div>
-              {editingIncome ? (
-                <Input
-                  type="number"
-                  step="1"
-                  min="0"
-                  value={incomeInput}
-                  onChange={(e) => setIncomeInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleIncomeSave()}
-                  onBlur={handleIncomeSave}
-                  className="mt-2 text-2xl font-bold h-12"
-                  autoFocus
-                />
-              ) : (
-                <div className="mt-3 text-[40px] font-bold leading-none tracking-tight text-ios-blue">
-                  {formatCurrencyShort(income)}
-                </div>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full rounded-xl"
+                onClick={() => {
+                  if (editingIncome) {
+                    handleIncomeSave()
+                  } else {
+                    setIncomeInput(String(income))
+                    setEditingIncome(true)
+                  }
+                }}
+              >
+                {editingIncome ? <><Check className="h-3.5 w-3.5" /> Save</> : <><Pencil className="h-3.5 w-3.5" /> Edit</>}
+              </Button>
             </CardContent>
           </Card>
 
           {/* Spent Card */}
           <Card className="shadow-card border-none">
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="h-4 w-4 text-ios-orange" />
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Spent
-                </span>
+            <CardContent className="pt-5 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-2xl p-3 w-12 h-12 flex items-center justify-center shrink-0 bg-gradient-to-br from-orange-400 to-orange-500">
+                  <ShoppingCart className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Spent</span>
+                  <div className="text-[32px] font-bold leading-none tracking-tight text-ios-orange">
+                    {formatCurrencyShort(totalSpent)}
+                  </div>
+                </div>
               </div>
-              <div className="mt-3 text-[40px] font-bold leading-none tracking-tight text-ios-orange">
-                {formatCurrencyShort(totalSpent)}
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full rounded-xl"
+                onClick={() => onNavigate?.('spending')}
+              >
+                View Details
+              </Button>
             </CardContent>
           </Card>
 
           {/* Remaining Card */}
           <Card className="shadow-card border-none">
-            <CardContent className="pt-5">
-              <div className="flex items-center gap-2">
-                <PiggyBank className={cn('h-4 w-4', remaining >= 0 ? 'text-ios-green' : 'text-ios-red')} />
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Remaining
-                </span>
+            <CardContent className="pt-5 flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  'rounded-2xl p-3 w-12 h-12 flex items-center justify-center shrink-0 bg-gradient-to-br',
+                  remaining >= 0 ? 'from-green-400 to-green-600' : 'from-red-400 to-red-500'
+                )}>
+                  <PiggyBank className="h-6 w-6 text-white" />
+                </div>
+                <div>
+                  <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Remaining</span>
+                  <div className={cn('text-[32px] font-bold leading-none tracking-tight', remaining >= 0 ? 'text-ios-green' : 'text-ios-red')}>
+                    {formatCurrencyShort(remaining)}
+                  </div>
+                </div>
               </div>
-              <div className={cn('mt-3 text-[40px] font-bold leading-none tracking-tight', remaining >= 0 ? 'text-ios-green' : 'text-ios-red')}>
-                {formatCurrencyShort(remaining)}
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full rounded-xl"
+                onClick={() => onNavigate?.('budgets')}
+              >
+                Edit
+              </Button>
             </CardContent>
           </Card>
         </div>
